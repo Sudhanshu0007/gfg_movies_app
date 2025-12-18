@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -13,38 +14,50 @@ import Grid from '@mui/material/Grid';
 export default function MovieCard({ movie }) {
 
     const { title, overview, poster_path, vote_average, genre_ids } = movie;
+    const [expanded, setExpanded] = useState(false);
     const imageUrl = `https://image.tmdb.org/t/p/w500${poster_path}`;
 
     const genres = useSelector(state => state.genres.list);
-    const genreNames = genre_ids
+    const genreNames = (genre_ids
         ?.map(id => genres.find(g => g.id === id)?.name)
-        .filter(Boolean);
+        .filter(Boolean)) || [];
+
+    const descriptionSx = expanded
+        ? { color: 'text.secondary' }
+        : {
+            color: 'text.secondary',
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden'
+        };
 
     return (
         <Grid item xs={3}>
-            <Card sx={{ maxWidth: 345 }}>
+            <Card sx={{ maxWidth: 345, height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'inherit' }}>
                 <CardMedia
-                    sx={{ height: 540 }}
+                    component="img"
+                    sx={{ aspectRatio: '2 / 3', objectFit: 'cover' }}
                     image={imageUrl}
-                    title="green iguana"
+                    alt={title}
                 />
-                <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
+                <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    <Typography gutterBottom variant="h6" component="div" sx={{ fontFamily: 'inherit' }}>
                         {title}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    <Typography variant="body2" sx={{ ...descriptionSx, fontFamily: 'inherit' }}>
                         {overview}
                     </Typography>
-                    <Typography gutterBottom variant="h5" component="div">
-                        <Chip label={genreNames.join(', ')} />
-                        
-                    </Typography>
+                    <Chip label={genreNames.join(', ')} sx={{ fontFamily: 'inherit' }} />
                 </CardContent>
-                <CardActions>
+                <CardActions sx={{ justifyContent: 'space-between' }}>
                     <IconButton aria-label="add to favorites">
                         <FavoriteIcon />
                     </IconButton>
-                    <Typography gutterBottom variant="h6" component="div">
+                    <Button size="small" onClick={() => setExpanded(prev => !prev)} sx={{ fontFamily: 'inherit' }}>
+                        {expanded ? 'Show less' : 'Read more'}
+                    </Button>
+                    <Typography gutterBottom variant="subtitle2" component="div" sx={{ fontFamily: 'inherit' }}>
                         {vote_average}
                     </Typography>
 

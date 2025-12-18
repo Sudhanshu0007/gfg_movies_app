@@ -2,7 +2,8 @@ import axios from 'axios';
 import { setMovies } from '../slice/movieSlice';
 import { setGenres } from '../slice/genreSlice';
 
-const API_KEY = process.env.API_KEY;
+// CRA exposes env vars only when prefixed with REACT_APP
+const API_KEY = process.env.REACT_APP_API_KEY;
 const url = 'https://api.themoviedb.org/3';
 
 export const getMovies = () => async dispatch => {
